@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: zomato-ai-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app -w 1 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # mark as secret — you fill this in on the Render dashboard
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /api/health

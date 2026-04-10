@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zomato AI Recommendations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Zomato AI</h1>
+      <p>Discover the best dining experiences powered by AI</p>
+    </header>
+
+    <main>
+      <p id="locality-warn" class="warn" hidden></p>
+
+      <div class="card">
+        <form id="rec-form" autocomplete="on">
+          <div class="field-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="field">
+              <label for="city">Broad Area (Macro-Zone)</label>
+              <select id="city" name="city" required>
+                <option value="">— Loading areas... —</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="locality">Specific Locality</label>
+              <select id="locality" name="locality" disabled aria-label="Pick suggested locality">
+                <option value="">— Pick an area first —</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="field">
+              <label for="budget">Max budget (₹ for two)</label>
+              <input
+                id="budget"
+                name="budget"
+                type="number"
+                min="1"
+                max="200000"
+                step="1"
+                value="1000"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="cuisine">Preferred Cuisine</label>
+              <select id="cuisine" name="cuisine">
+                <option value="">— All Cuisines —</option>
+                <option value="North Indian">North Indian</option>
+                <option value="Chinese">Chinese</option>
+                <option value="South Indian">South Indian</option>
+                <option value="Fast Food">Fast Food</option>
+                <option value="Biryani">Biryani</option>
+                <option value="Continental">Continental</option>
+                <option value="Desserts">Desserts</option>
+                <option value="Cafe">Cafe</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Italian">Italian</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Street Food">Street Food</option>
+                <option value="Pizza">Pizza</option>
+                <option value="Burger">Burger</option>
+                <option value="Seafood">Seafood</option>
+                <option value="Ice Cream">Ice Cream</option>
+                <option value="Mughlai">Mughlai</option>
+                <option value="Asian">Asian</option>
+                <option value="Thai">Thai</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="min_rating" style="display: flex; justify-content: space-between; align-items: center;">
+              Minimum Rating
+              <span id="rating-label" style="background: #24963F; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.85rem;">3.0 ★</span>
+            </label>
+            <input
+              id="min_rating"
+              name="min_rating"
+              type="range"
+              min="0"
+              max="5"
+              step="0.5"
+              value="3"
+              style="width: 100%; margin-top: 0.5rem;"
+            />
+          </div>
+
+          <div class="field">
+            <label>Specific Cravings & Dietary Needs</label>
+            <div id="cravings-tags" class="tag-container" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+              <span class="tag-chip" data-value="Vegetarian">Vegetarian</span>
+              <span class="tag-chip" data-value="Non-Vegetarian">Non-Vegetarian</span>
+              <span class="tag-chip" data-value="Rooftop">Rooftop</span>
+              <span class="tag-chip" data-value="Outdoor Seating">Outdoor Seating</span>
+              <span class="tag-chip" data-value="Romantic">Romantic</span>
+              <span class="tag-chip" data-value="Family Friendly">Family Friendly</span>
+              <span class="tag-chip" data-value="Quick Service">Quick Service</span>
+              <span class="tag-chip" data-value="Pet Friendly">Pet Friendly</span>
+              <span class="tag-chip" data-value="Live Music">Live Music</span>
+            </div>
+            <input type="hidden" id="extras" name="extras" />
+          </div>
+
+          <button type="submit" class="primary" id="submit">Find Recommendations</button>
+        </form>
+      </div>
+
+      <div id="loading" class="loading" style="display: none">
+        <div class="spinner"></div>
+        <p>Expertly curating your dining shortlist...</p>
+      </div>
+
+      <div id="error"></div>
+
+      <div id="after-results" style="display: none">
+        <div class="meta-bar">
+          <span id="results-meta"></span>
+          <button type="button" class="secondary" id="clear">New Search</button>
+        </div>
+      </div>
+
+      <div id="results"></div>
+    </main>
+
+    <footer>
+      <p>Data from Zomato Dataset · Powered by Groq AI</p>
+      <p style="margin-top: 0.5rem; opacity: 0.7; font-size: 0.8rem;">© 2026 Zomato AI Assistant. All rights reserved.</p>
+    </footer>
+
+    <script>
+      document.getElementById("min_rating").addEventListener("input", (e) => {
+        const val = Number(e.target.value).toFixed(1);
+        const label = document.getElementById("rating-label");
+        label.textContent = val + " ★";
+        if (val >= 4.0) label.style.background = "#24963F";
+        else if (val >= 3.0) label.style.background = "#FFBA00";
+        else label.style.background = "#FF4F4F";
+      });
+    </script>
+    <script src="/static/app.js?v=3"></script>
+  </body>
+</html>

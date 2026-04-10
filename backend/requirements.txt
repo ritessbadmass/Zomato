@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+gunicorn
+groq
+datasets
+pandas
+python-dotenv
+pydantic
+huggingface_hub

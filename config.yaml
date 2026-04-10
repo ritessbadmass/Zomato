@@ -1,0 +1,24 @@
+# Non-secret defaults. Override paths via env RESTAURANT_REC_CONFIG for another file.
+
+paths:
+  processed_catalog: data/processed/restaurants.parquet
+
+dataset:
+  hf_id: ManikaSaini/zomato-restaurant-recommendation
+  split: train
+
+filter:
+  max_shortlist_candidates: 40
+  locality_top_n: 50
+  # Fixed INR thresholds for budget_tier / estimated_cost labels
+  budget_low_max_inr: 300
+  budget_medium_max_inr: 700
+  relax_min_rating_delta: 0.5
+
+groq:
+  model: llama-3.3-70b-versatile
+  max_tokens: 2000
+  temperature: 0.3
+  timeout_seconds: 60
+
+prompt_version: v1
