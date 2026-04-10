@@ -1,59 +1,131 @@
-# Zomato AI (phase-wise architecture)
+# Zomato AI - Smart Restaurant Recommendations
 
-Restaurant recommendations: **Hugging Face catalog** → **deterministic filter** → **Groq LLM** for ranking and explanations. See `src/restaurant_rec/` for phases 1–4.
+An AI-powered restaurant discovery platform that helps users find the perfect dining spot based on their preferences.
 
-## Setup
+## Product Overview
 
-1. Clone / open this repo.
-2. Copy `.env.example` to `.env` and set **`GROQ_API_KEY`** ([Groq Console](https://console.groq.com/)).
-3. Create a virtualenv (optional) and install the package in editable mode:
+**Zomato AI** combines a curated restaurant dataset with Groq's LLM to deliver personalized restaurant recommendations with intelligent explanations.
 
-   ```bash
-   pip install -e .
-   ```
+### Key Features
 
-4. **Build the catalog** (Parquet under `data/processed/`):
+| Feature | Description |
+|---------|-------------|
+| **Smart Filtering** | Location, budget, cuisine, and rating-based filtering |
+| **AI-Powered Rankings** | LLM ranks restaurants and explains why each matches your preferences |
+| **Budget Tags** | Visual budget selection (Rs. 500 to 3000+) for 2 people |
+| **Interactive Dropdowns** | Clean, clickable dropdowns for location and cuisine |
+| **Real-time Results** | Instant recommendations with detailed explanations |
 
-   ```bash
-   python scripts/ingest_zomato.py
-   ```
+## Tech Stack
 
-   On first run the Hugging Face dataset download can take several minutes.
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   Vercel        │────▶│    Railway      │────▶│   Groq API      │
+│  (React App)    │     │  (FastAPI)      │     │   (LLM)         │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                               │
+                               ▼
+                        ┌─────────────────┐
+                        │  HuggingFace    │
+                        │  (Dataset)      │
+                        └─────────────────┘
+```
 
-5. **Run the API + web UI**:
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **Frontend** | React + Vite + Tailwind | User interface |
+| **Backend** | FastAPI (Python) | API server |
+| **AI Engine** | Groq (llama-3.3-70b) | Restaurant ranking & explanations |
+| **Data** | HuggingFace Dataset | Restaurant catalog |
+| **Deployment** | Railway + Vercel | Hosting |
 
-   ```bash
-   uvicorn restaurant_rec.phase4.app:app --reload --host 127.0.0.1 --port 8000
-   ```
+## Project Structure
 
-6. Open **http://127.0.0.1:8000/** for the static UI, or **http://127.0.0.1:8000/docs** for OpenAPI.
+```
+zomato-ai/
+├── backend/                 # FastAPI backend (Railway)
+│   ├── main.py             # API endpoints
+│   ├── data_loader.py      # Dataset loading & filtering
+│   ├── recommender.py      # Groq LLM integration
+│   ├── models.py           # Pydantic models
+│   └── requirements.txt    # Python dependencies
+│
+├── frontend/                # React frontend (Vercel)
+│   ├── src/
+│   │   ├── App.jsx         # Main app component
+│   │   ├── api.js          # API client
+│   │   └── components/     # React components
+│   │       ├── SearchForm.jsx
+│   │       ├── RestaurantCard.jsx
+│   │       └── LoadingSpinner.jsx
+│   ├── .env.production     # Production API URL
+│   └── package.json
+│
+├── data/                    # Data storage
+│   └── processed/
+│
+├── railway.json            # Railway deployment config
+├── requirements.txt        # Root requirements for Railway
+├── runtime.txt             # Python version
+├── Procfile               # Railway start command
+└── DEPLOY.md              # Deployment guide
+```
 
-### Configuration
+## User Flow
 
-- **`config.yaml`**: paths, filter caps (`max_shortlist_candidates`), budget tier INR cutoffs, Groq model name, `prompt_version`.
-- **Environment**: `GROQ_API_KEY` (required for recommendations). Optional `RESTAURANT_REC_CONFIG` to point to an alternate YAML.
+1. **Input Preferences**
+   - Select location from dropdown
+   - Choose budget tag (Rs. 500 - 3000+)
+   - Pick cuisine from dropdown
+   - Set minimum rating
+   - Add optional preferences
 
-### API (summary)
+2. **AI Processing**
+   - Backend filters restaurants by criteria
+   - Groq LLM ranks top matches
+   - AI generates personalized explanations
 
-| Method | Path | Purpose |
-|--------|------|---------|
+3. **Results Display**
+   - Top 5 ranked restaurants
+   - Each with: name, location, cuisines, cost, rating
+   - AI explanation for each recommendation
+   - Summary of overall recommendations
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET | `/api/health` | Health check |
-| GET | `/api/v1/locations` | Distinct cities |
-| GET | `/api/v1/localities` | Top localities (for dropdown) |
-| POST | `/api/v1/recommend` | Body: `{ "preferences": { "location", "budget_max_inr", "cuisine", "min_rating", "extras" } }` |
+| GET | `/api/filters` | Get locations & cuisines |
+| POST | `/api/recommendations` | Get AI recommendations |
 
-Response shape: `summary`, `items[]` (id, name, cuisines, rating, estimated_cost, cost_display, explanation, rank), `meta` (shortlist_size, model, prompt_version, timings, relaxed_filters).
+## Deployment
 
-### Canonical row (example)
+- **Backend**: Railway (auto-deploys from GitHub)
+- **Frontend**: Vercel (auto-deploys from GitHub)
 
-After ingest, each Parquet row includes: `id`, `name`, `locality`, `city`, `cuisines`, `rating`, `cost_for_two`, `budget_tier`, `votes`, `address`, `has_online_order`, `has_table_booking`, `raw_features`.
+See [DEPLOY.md](DEPLOY.md) for detailed instructions.
 
-### Notes
+## Environment Variables
 
-- If `data/processed/restaurants.parquet` is missing at startup, the app runs ingest automatically (same as the script).
-- Do not commit `.env` or real API keys.
-- Legacy flat `backend/` modules are deprecated; use `src/restaurant_rec/` (see `backend/README.md`).
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GROQ_API_KEY` | Yes | Groq API key for LLM |
 
-### Optional: old Vite frontend
+## Local Development
 
-The `frontend/` folder may still exist from an earlier scaffold; the supported UI is **`web/`** served by FastAPI.
+```bash
+# Backend
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+# Frontend
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+Built with AI · Restaurant data from Zomato
