@@ -91,13 +91,25 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-amber-100 bg-white/80 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">
-              Zomato AI <span aria-hidden>🍽️</span>
-            </h1>
-            <p className="text-sm text-slate-500">Powered by Claude</p>
+      <header className="border-b border-red-100 bg-white shadow-sm">
+        <div className="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500 text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.5 2 5.5 5 5 9c-.3 2.5.5 5 2.5 7 1.3 1.3 2 3 2 4.5V21h5v-.5c0-1.5.7-3.2 2-4.5 2-2 2.8-4.5 2.5-7-.5-4-3.5-7-7-7zm0 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-red-500 md:text-3xl">
+                zomato
+              </h1>
+              <p className="text-xs text-slate-500">AI Recommendations</p>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-600">
+              AI Powered
+            </span>
           </div>
         </div>
       </header>
@@ -105,7 +117,7 @@ export default function App() {
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8">
         {filtersWarning && (
           <div
-            className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
             role="status"
           >
             {filtersWarning}
@@ -140,7 +152,7 @@ export default function App() {
                 Found {totalFiltered} restaurants · Showing top{" "}
                 {recommendations.length} AI-curated picks
                 {relaxedFilters && (
-                  <span className="ml-2 text-amber-700">
+                  <span className="ml-2 text-red-600">
                     (some filters were relaxed to find matches)
                   </span>
                 )}
@@ -155,7 +167,7 @@ export default function App() {
             </div>
 
             {summary && (
-              <div className="rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-sky-950">
+              <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-900">
                 {summary}
               </div>
             )}
@@ -175,8 +187,8 @@ export default function App() {
         )}
       </main>
 
-      <footer className="mt-auto border-t border-slate-200 bg-white/80 py-6 text-center text-sm text-slate-500">
-        Built with Claude AI · Data from Zomato
+      <footer className="mt-auto border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500">
+        <p>Made with AI · Restaurant data from Zomato</p>
       </footer>
     </div>
   );

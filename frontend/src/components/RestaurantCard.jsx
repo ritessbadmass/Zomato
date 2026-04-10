@@ -1,7 +1,7 @@
 function rankBadgeClass(rank) {
-  if (rank === 1) return "bg-amber-400 text-amber-950 ring-2 ring-amber-200";
-  if (rank === 2) return "bg-slate-300 text-slate-900 ring-2 ring-slate-200";
-  if (rank === 3) return "bg-orange-300 text-orange-950 ring-2 ring-orange-200";
+  if (rank === 1) return "bg-red-500 text-white ring-2 ring-red-200";
+  if (rank === 2) return "bg-red-400 text-white ring-2 ring-red-200";
+  if (rank === 3) return "bg-red-300 text-red-900 ring-2 ring-red-200";
   return "bg-slate-200 text-slate-700 ring-2 ring-slate-100";
 }
 
@@ -57,10 +57,10 @@ export default function RestaurantCard({ recommendation }) {
       </div>
 
       <div className="flex flex-wrap gap-2 px-5 pt-4 text-sm">
-        <span className="rounded-full bg-amber-50 px-3 py-1 font-medium text-amber-900">
-          ⭐ {ratingLabel}
+        <span className="rounded-full bg-green-100 px-3 py-1 font-medium text-green-800">
+          ★ {ratingLabel}
         </span>
-        <span className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-900">
+        <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700">
           {formatCost(recommendation.avg_cost)}
         </span>
         <span
@@ -84,11 +84,11 @@ export default function RestaurantCard({ recommendation }) {
       </div>
 
       <div className="mt-4 flex-1 px-5 pb-5">
-        <div className="rounded-xl border border-amber-100 bg-amber-50/90 px-4 py-3">
-          <p className="text-sm font-semibold text-amber-900">
-            <span aria-hidden>✨</span> Why it fits you
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+          <p className="text-sm font-semibold text-red-800">
+            Why we recommend this
           </p>
-          <p className="mt-2 text-sm italic leading-relaxed text-amber-950/90">
+          <p className="mt-2 text-sm leading-relaxed text-slate-700">
             {recommendation.explanation}
           </p>
         </div>
