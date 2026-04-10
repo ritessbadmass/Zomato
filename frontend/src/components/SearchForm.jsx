@@ -19,6 +19,7 @@ export default function SearchForm({ onSubmit, loading, filtersData }) {
   const [minRating, setMinRating] = useState(3);
   const [extraPreferences, setExtraPreferences] = useState("");
   const [showCuisineDropdown, setShowCuisineDropdown] = useState(false);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,20 +46,52 @@ export default function SearchForm({ onSubmit, loading, filtersData }) {
         <label htmlFor={locId} className="text-sm font-semibold text-slate-700">
           Location
         </label>
-        <input
-          id={locId}
-          type="text"
-          list="locations-list"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="City or area (e.g. Connaught Place)"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200"
-        />
-        <datalist id="locations-list">
-          {(fd.locations || []).map((loc) => (
-            <option key={loc} value={loc} />
-          ))}
-        </datalist>
+        <div className="relative">
+          <input
+            id={locId}
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            onFocus={() => setShowLocationDropdown(true)}
+            placeholder="Select location"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200"
+          />
+          {showLocationDropdown && (
+            <div className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg">
+              <div className="p-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLocation("");
+                    setShowLocationDropdown(false);
+                  }}
+                  className="w-full rounded px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100"
+                >
+                  Any Location
+                </button>
+                {(fd.locations || []).map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => {
+                      setLocation(loc);
+                      setShowLocationDropdown(false);
+                    }}
+                    className="w-full rounded px-3 py-2 text-left text-sm text-slate-700 hover:bg-red-50 hover:text-red-600"
+                  >
+                    {loc}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {showLocationDropdown && (
+            <div
+              className="fixed inset-0 z-0"
+              onClick={() => setShowLocationDropdown(false)}
+            />
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-3">
