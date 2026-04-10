@@ -1,0 +1,9 @@
+# Zomato AI - Railway Deployment Requirements
+fastapi
+uvicorn[standard]
+groq
+datasets
+pandas
+python-dotenv
+pydantic
+huggingface_hub
